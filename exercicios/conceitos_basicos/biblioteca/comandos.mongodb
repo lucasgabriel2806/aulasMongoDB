@@ -1,0 +1,223 @@
+// Parte 1 – Criação de Banco e Coleções
+// 1) Crie um banco de dados chamado biblioteca_fatec e selecione-o para uso.
+
+// Código mongo shell
+// use biblioteca_fatec
+
+// Código js
+use("biblioteca_fatec")
+
+// 2) Crie explicitamente a coleção livros.  
+db.createCollection("livros")
+
+// 3) Insira um documento na coleção autores sem criá-la previamente, deixando que o MongoDB a crie automaticamente. 
+db.autores.insertOne({
+    nome: "Machado de Assis",
+    descricao: "Considerado o maior nome da literatura brasileira, autor de Dom Casmurro."
+})
+
+// 4) Insira um documento na coleção alunos contendo os campos: nome, curso, anoIngresso e ativo (boolean).
+db.alunos.insertOne({
+    nome: "Lucas",
+    curso: "DSM",
+    anoIngresso: 2025,
+    ativo: true
+})
+
+// Parte 2 – Inserção de Documentos  
+// 5) Insira um documento na coleção livros contendo os campos: titulo, anoPublicacao, genero, paginas e disponivel.  
+db.livros.insertOne({
+    titulo: "Dom Casmurro",
+    anoPublicacao: 1899,
+    genero: "Romance",
+    paginas: 400,
+    disponivel: true
+})
+
+// 6) Utilize insertMany() para inserir pelo menos três novos livros na coleção livros. 
+db.livros.insertMany([
+    {
+        titulo: "Dom Casmurro",
+        anoPublicacao: 1899,
+        genero: "Romance",
+        paginas: 400,
+        disponivel: true        
+    },
+    {
+        titulo: "Memórias Póstumas de Brás Cubas",
+        autor: "Machado de Assis",
+        anoPublicacao: 1881,
+        genero: "Romance",
+        paginas: 350,
+        disponivel: true
+    },
+    {
+        titulo: "Quincas Borba",
+        autor: "Machado de Assis",
+        anoPublicacao: 1891,
+        genero: "Romance",
+        paginas: 300,
+        disponivel: false
+    }
+]) 
+
+
+// 7) Insira um documento na coleção autores contendo os campos: nome, nacionalidade e livrosPublicados (array de títulos).
+db.autores.insertOne({
+    nome: "Jorge Amado",
+    nacionalidade: "Brasileira",
+    livrosPublicados: 30
+})
+
+// Parte 3 – Subdocumentos  
+// 8) Insira um livro contendo um subdocumento chamado autor, com os campos nome e nacionalidade.  
+db.livros.insertOne({
+    autor: {
+        nome: "Clarice Lispector",
+        nacionalidade: "Brasileira"
+    }
+})
+
+// 9) Insira um livro contendo um array chamado autores, onde cada elemento seja um subdocumento com nome e nacionalidade.  
+db.livros.insertOne({
+    autores: [
+        {
+            nome: "José de Alencar",
+            nacionalidade: "Brasileira"
+        },
+        {
+            nome: "Mário de Andrade",
+            nacionalidade: "Brasileira"
+        }
+    ]
+})
+
+// 10) Insira um aluno contendo um subdocumento chamado contatos, com os campos email e telefone.
+db.alunos.insertOne({
+    contatos: {
+        email: "lucas@gmail.com",
+        telefone: "998877665"
+    }
+})
+
+
+// Parte 4 – Arrays e Estruturas Mais Complexas  
+// 11) Insira um livro contendo os campos: titulo, categorias (array de strings) e palavrasChave (array de strings).  
+db.livros.insertOne({
+    titulo: "O Senhor dos Anéis",
+    categorias: [
+        "Fantasia",
+        "Aventura"
+    ],
+    palavrasChave: [
+        "anel",
+        "Terra Média",
+        "hobbits",
+        "épico"
+    ]
+})
+
+// 12) Crie a coleção emprestimos inserindo um documento com os campos: aluno (subdocumento  com  nome  e  curso)  livro  (subdocumento com  titulo) dataEmprestimo dataDevolucao status  
+db.emprestimos.insertOne({
+    aluno: {
+        nome: "João",
+        curso: "Sistemas para Internet"
+    },
+    livro: {
+        titulo: "IHC"
+    },
+    dataEmprestimo: "28/02/2026",
+    dataDevolucao: "09/03/2026",
+    status: "Não devolvido"
+})
+
+// 13) Utilize insertMany() para inserir pelo menos três documentos na coleção emprestimos.
+db.emprestimos.insertMany([
+    {
+        aluno: {
+            nome: "Pedro",
+            curso: "DSM"
+        },
+        livro: {
+            titulo: "Design Digital"
+        },
+        dataEmprestimo: "22/02/2026",
+        dataDevolucao: "04/03/2026",
+        status: "Não devolvido"
+    },
+    {
+        aluno: {
+            nome: "Tiago",
+            curso: "DSM"
+        },
+        livro: {
+            titulo: "Hardware"
+        },
+        dataEmprestimo: "23/02/2026",
+        dataDevolucao: "05/03/2026",
+        status: "Devolvido"
+    },
+    {
+        aluno: {
+            nome: "Willian",
+            curso: "DSM"
+        },
+        livro: {
+            titulo: "Banco de Dados"
+        },
+        dataEmprestimo: "04/03/2026",
+        dataDevolucao: "14/03/2026",
+        status: "Não devolvido"
+    }
+])
+
+
+// Parte 5 – Atualizações  
+// 14) Atualize um livro específico alterando o campo disponivel para false. 
+db.livros.updateOne( 
+    {titulo: "Dom Casmurro"}, 
+    {$set: {disponivel: false}} 
+)
+
+// 15) Adicione uma nova categoria ao array categorias de um livro utilizando $push.  
+db.livros.updateOne( 
+    {titulo: "O Senhor dos Anéis"},
+    {$push: {categorias: "Literatura Inglesa"}}
+)
+
+
+// 16) Adicione ao livro um campo chamado vezesEmprestado e incremente seu valor utilizando $inc.  
+db.livros.updateOne(
+    {titulo: "Dom Casmurro"},
+    {$inc: {vezesEmprestado: 1}}
+)
+
+// 17) Atualize todos os livros de um determinado gênero adicionando o campo destaque com valor true.  
+db.livros.updateMany(
+    {genero: "Romance"},
+    {$push: {destaque: true}}
+)
+
+// 18) Remova uma palavra específica do array palavrasChave de um livro utilizando $pull.
+db.livros.updateOne(
+    {titulo: "O Senhor dos Anéis"},
+    {$pull: {palavrasChave: "épico"}}
+)
+
+
+//Parte 6 – Remoções  
+// 19) Remova um único documento da coleção emprestimos com base no nome do aluno ou no status.  
+db.emprestimos.deleteOne({
+    $or: [
+        { nome: "João" },
+        { status: "Devolvido" }
+    ]
+})
+
+// 20) Remova todos os livros que possuam menos de 100 páginas ou que pertençam a um determinado gênero.
+db.livros.deleteMany({
+    $or: [
+        { paginas: { $lt: 100 } },
+        { genero: "Romance" }
+    ]
+})
